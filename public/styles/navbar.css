@@ -1,0 +1,54 @@
+nav {
+    background-color: #18181b;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav h1 {
+    font-size: max(1.3rem, 2.2vw);
+}
+
+
+nav a:not(.brand) {
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    font-size: max(1rem, 1.4vw);
+    color: rgb(255, 255, 0);
+    transition: transform 250ms ease;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+.brand {
+    color: white;
+}
+
+nav a:last-of-type {
+    color: white;
+}
+
+
+.brand:hover {
+    text-decoration: underline;
+}
+
+.log {
+    display: flex;
+    gap: 2vw;
+}
+
+nav a:not(.brand):hover, nav a:not(.brand):focus {
+    background-color: grey;
+    transform: scale(1.2);
+}
+
+
+@media (max-width: 768px) {
+    nav {
+        padding: 1rem 8px;
+    }
+}

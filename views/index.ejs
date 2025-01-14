@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="./styles/reset.css">
+    <link rel="stylesheet" href="./styles/navbar.css">
+    <link rel="stylesheet" href="./styles/index.css">
+</head>
+<body>
+    <%- include('./partials/navbar') %>
+    <main>
+        <% if(locals.currentUser) {%>
+            <h1>Welcome <em><%= currentUser.first_name %> <%= currentUser.last_name %> (<%=currentUser.username%>)</em> !</h1>
+        <% } %>
+    </main>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<nav>
+    <a href="/" class="brand"><h1>3antoClub</h1></a>
+    <% if(locals.currentUser) { %>
+        <div class="log">
+            <a href="/logout">Logout</a>
+        </div>
+        </div>
+    <% } else { %>
+        <div class="log">
+            <a href="/login">Login</a>
+            <a href="/sign-up">Sign up</a>
+        </div>
+    <% } %>
+</nav>
