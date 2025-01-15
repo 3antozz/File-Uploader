@@ -4,7 +4,7 @@ const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const prisma = require('./db/client')
 const path = require('node:path');
 const indexRouter = require('./routes/indexRouter');
-const uploadRouter = require('./routes/upload');
+const foldersRouter = require('./routes/foldersRouter');
 const passport = require('passport');
 const authRouter = require('./routes/auth');
 require("dotenv").config();
@@ -32,6 +32,7 @@ app.use(passport.session());
 
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.set('view engine', 'ejs');
 app.set("views", path.join(__dirname, "views"));
 app.set('views', './views');
@@ -50,7 +51,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/', authRouter);
-app.use('/folders', uploadRouter);
+app.use('/folders', foldersRouter);
 
 
 

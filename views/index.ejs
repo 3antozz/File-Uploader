@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-    <link rel="stylesheet" href="./styles/reset.css">
-    <link rel="stylesheet" href="./styles/navbar.css">
-    <link rel="stylesheet" href="./styles/index.css">
+    <link rel="stylesheet" href="/styles/reset.css">
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <link rel="stylesheet" href="/styles/index.css">
 </head>
 <body>
-    <%- include('./partials/navbar') %>
+    <%- include('partials/navbar') %>
     <main>
         <% if(locals.currentUser) {%>
             <h1>Welcome <em><%= currentUser.first_name %> <%= currentUser.last_name %> (<%=currentUser.username%>)</em> !</h1>
@@ -21,14 +21,24 @@
                     <a href="/folders/<%= subfolder.id %>"><%= subfolder.name %></a>
                 <% }) %>
                 <% locals.folder.files.map((file) => { %>
-                    <a href="/folders/<%= subfolder.id %>"><%= file.name %></a>
+                    <a download="" href="/uploads/<%= currentUser.username%>/<%= file.fileName%>"><%= file.originalName %></a>
                 <% }) %>
             <% } %>
         </section>
-        <form action="/folders/create/<%= locals.folder.id %>" method="post">
+        <form action="/folders/create" method="post">
             <div>
                 <label for="name">Folder name:</label>
                 <input type="text" id="name" name="folder_name"/>
+                <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
+            </div>
+            <button>Submit</button>
+        </form>
+        <form action="/folders/upload" method="post" enctype="multipart/form-data">
+            <%- include('partials/errors') %>
+            <div>
+                <label for="file">Upload files:</label>
+                <input type="file" id="file" name="files" multiple />
+                <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
             </div>
             <button>Submit</button>
         </form>

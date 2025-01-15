@@ -24,9 +24,9 @@ model User {
 
 model Folder {
     id              Int       @id @default(autoincrement())
-    name            String    @unique @db.Text
+    name            String    
     owner           User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    userId          Int           
+    userId          Int          
     files           File[]
     creationDate    DateTime  @default(now())   
     parentId        Int?      
@@ -35,12 +35,14 @@ model Folder {
 }
 
 model File {
-    id            Int       @id @default(autoincrement())
-    name          String    @unique
-    url           String    @unique @db.Text
+    id            Int       @id @default(autoincrement())  
+    uploadDate    DateTime  @default(now()) 
+    originalName  String
+    fileName      String
+    size          Int   
+    // url           String    @unique @db.Text
     folder        Folder    @relation(fields: [folderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    folderId      Int
-    uploadDate    DateTime  @default(now())    
+    folderId      Int 
 }
 
 model Session {

@@ -16,7 +16,6 @@ const checkAuth = (req, res, next) => {
 
 indexRouter.get('/', checkAuth, asyncHandler(async(req, res) => {
     const folder = await db.getRootFolder(req.user.id);
-    console.log(folder);
     res.render('index', {title: 'Upload Files', folder: folder});
 }));
 

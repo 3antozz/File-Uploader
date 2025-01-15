@@ -70,15 +70,33 @@ exports.getRootFolder = async(userId) => {
     return result;
 }
 
-exports.getFolder = async (id) => {
-    const folder = await prisma.folder.findUnique({
+exports.getFolder = async (userId, id) => {
+    const result = await prisma.folder.findUnique({
         where: {
+            userId: userId,
             id: id
         },
         include: {
             files: true,
             subfolders: true
+        },
+    })
+    console.log(result);
+    return result;
+}
+
+exports.addFile = async(originalName, fileName, size, folderId) => {
+    const result = await prisma.file.create({
+        data: {
+            originalName,
+            fileName,
+            size,
+            folder: {
+                connect: {
+                    id: folderId
+                }
+            }
         }
     })
-    return folder;
+    console.log(result);
 }
