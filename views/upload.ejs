@@ -11,16 +11,12 @@
 <body>
     <%- include('./partials/navbar') %>
     <main>
-        <h1>Post a message</h1>
-        <form action="/message" method="post">
+        <h1>Upload files</h1>
+        <form action="/folders/upload" method="post" enctype="multipart/form-data">
             <%- include('./partials/errors') %>
             <div>
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="message_title" minlength="5" maxlength="55" required>
-            </div>
-            <div>
-                <label for="text">Message:</label>
-                <textarea id="text" name="message_text" minlength="5" maxlength="140" required></textarea>
+                <label for="file">Upload files:</label>
+                <input type="file" id="file" name="files" multiple />
             </div>
             <button>Submit</button>
         </form>

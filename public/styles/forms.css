@@ -30,6 +30,10 @@ form button {
     transition: transform 250ms ease;
 }
 
+main > p > a {
+    color: red;
+}
+
 form button:hover {
     transform: scale(1.3);
     cursor: pointer;

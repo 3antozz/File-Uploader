@@ -5,9 +5,25 @@ const db = require('../db/queries');
 
 const indexRouter = Router();
 
+const checkAuth = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        res.redirect('/login');
+    }
+}
 
-indexRouter.get('/', asyncHandler((req, res) => {
-    res.render('index', {title: 'Home'})
+
+indexRouter.get('/', checkAuth, asyncHandler(async(req, res) => {
+    const folder = await db.getRootFolder(req.user.id);
+    console.log(folder);
+    res.render('index', {title: 'Upload Files', folder: folder});
 }));
+
+indexRouter.get('/upload', checkAuth, asyncHandler((req, res) => {
+    res.render('upload', {title: 'Upload Files'});
+}));
+
+
 
 module.exports = indexRouter;

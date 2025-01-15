@@ -14,6 +14,24 @@
         <% if(locals.currentUser) {%>
             <h1>Welcome <em><%= currentUser.first_name %> <%= currentUser.last_name %> (<%=currentUser.username%>)</em> !</h1>
         <% } %>
+        <section>
+            <% if(locals.folder) { %>
+                <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
+                <% locals.folder.subfolders.map((subfolder) => { %>
+                    <a href="/folders/<%= subfolder.id %>"><%= subfolder.name %></a>
+                <% }) %>
+                <% locals.folder.files.map((file) => { %>
+                    <a href="/folders/<%= subfolder.id %>"><%= file.name %></a>
+                <% }) %>
+            <% } %>
+        </section>
+        <form action="/folders/create/<%= locals.folder.id %>" method="post">
+            <div>
+                <label for="name">Folder name:</label>
+                <input type="text" id="name" name="folder_name"/>
+            </div>
+            <button>Submit</button>
+        </form>
     </main>
 </body>
 </html>
