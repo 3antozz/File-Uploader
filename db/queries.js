@@ -71,7 +71,7 @@ exports.getRootFolder = async(userId) => {
 }
 
 exports.getFolder = async (userId, id) => {
-    const result = await prisma.folder.findUnique({
+    return await prisma.folder.findUnique({
         where: {
             userId: userId,
             id: id
@@ -81,8 +81,6 @@ exports.getFolder = async (userId, id) => {
             subfolders: true
         },
     })
-    console.log(result);
-    return result;
 }
 
 exports.addFile = async(originalName, fileName, size, folderId) => {

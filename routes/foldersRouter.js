@@ -1,10 +1,10 @@
-/* eslint-disable no-unused-vars */
 const { Router } = require('express');
 const db = require('../db/queries');
 const fs = require('fs');
 const path = require('node:path');
 const asyncHandler = require('express-async-handler');
 const crypto = require('node:crypto');
+const { format } = require('date-fns');
 
 const uploadRouter = Router();
 const multer  = require('multer')
@@ -54,8 +54,40 @@ uploadRouter.post('/create', checkAuth, asyncHandler(async(req, res) => {
 uploadRouter.get('/:id', checkAuth, asyncHandler(async(req, res) => {
     const folderId = +req.params.id;
     const folder = await db.getFolder(req.user.id, folderId);
+    formatData(folder);
+    console.log(folder);
     res.render('index', {title: 'Folder', folder: folder});
 }))
+
+function formateDate (date) {
+    return format(new Date(date), 'PPp')
+}
+
+function formatData (object) {
+    object.creationDate = formateDate(object.creationDate);
+    object.files.forEach((file) => {
+        file.uploadDate = formateDate(file.uploadDate);
+        file.size =  formatFileSize(file.size);
+    })
+    object.subfolders.forEach((folder) => {
+        folder.creationDate = formateDate(folder.creationDate);;
+    })
+    return object;
+}
+
+function formatFileSize(sizeInBytes) {
+    let formattedSize;
+    if (sizeInBytes >= 1_000_000_000) {
+      formattedSize = (sizeInBytes / 1_000_000_000).toFixed(2) + ' GB';
+    } else if (sizeInBytes >= 1_000_000) { 
+      formattedSize = (sizeInBytes / 1_000_000).toFixed(2) + ' MB';
+    } else if (sizeInBytes >= 1_000) {
+      formattedSize = (sizeInBytes / 1_000).toFixed(2) + ' KB';
+    } else {
+      formattedSize = sizeInBytes + ' Bytes';
+    }
+    return formattedSize;
+  }
 
 
 module.exports = uploadRouter;
