@@ -9,13 +9,19 @@ section {
 
 section > div {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
 }
 
 section > div svg {
     width: 1.2rem;
     fill: white;
 }
+
+section > div button {
+    background: none;
+    border: 2px solid white;
+}
+
 
 section > div > a {
     display: flex;

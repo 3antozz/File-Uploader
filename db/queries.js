@@ -1,5 +1,5 @@
 const prisma = require('./client')
-
+const { getFolderChain } = require('@prisma/client/sql')
 
 exports.addUser = async (first_name, last_name, username, password) => {
     await prisma.user.create({
@@ -83,8 +83,22 @@ exports.getFolder = async (userId, id) => {
     })
 }
 
+exports.getFoldersChain = async (folderId) => {
+    return await prisma.$queryRawTyped(getFolderChain(folderId))
+}
+
+
+exports.deleteFolder = async (userId, folderId) => {
+    await prisma.folder.delete({
+        where: {
+            userId: userId,
+            id: folderId
+        }
+    })
+}
+
 exports.addFile = async(originalName, fileName, size, folderId) => {
-    const result = await prisma.file.create({
+    await prisma.file.create({
         data: {
             originalName,
             fileName,
@@ -96,5 +110,23 @@ exports.addFile = async(originalName, fileName, size, folderId) => {
             }
         }
     })
-    console.log(result);
 }
+
+exports.deleteFile = async (userId, fileId) => {
+    await prisma.file.delete({
+        where: {
+            folder: {
+                userId: userId
+            },
+            id: fileId
+        }
+    })
+}
+
+
+
+const query =  `WITH RECURSIVE fh AS (
+                SELECT id, name, "parentId" FROM "Folder" WHERE id=8
+                UNION ALL
+                SELECT f.id, f.name, f."parentId" FROM "Folder" AS f JOIN fh ON fh."parentId" = f.id)
+                SELECT id, name FROM fh ORDER BY "parentId" NULLS FIRST;`

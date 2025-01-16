@@ -31,34 +31,6 @@ const checkAuth = (req, res, next) => {
   }
 }
 
-
-uploadRouter.post('/upload', checkAuth, upload.array('files'), asyncHandler(async (req, res, next) => {
-    const folderId = +req.body.folder_id;
-    console.log(req.files);
-    try {
-        for(const file of req.files) {
-            await db.addFile(file.originalname, file.filename, +file.size, folderId);
-        }
-        res.redirect(`/folders/${folderId}`)
-    } catch(error) {
-        return next(error);
-    }
-}))
-
-uploadRouter.post('/create', checkAuth, asyncHandler(async(req, res) => {
-    const { folder_name, folder_id } = req.body;
-    await db.addFolder(req.user.id, +folder_id, folder_name);
-    res.redirect('/');
-}))
-
-uploadRouter.get('/:id', checkAuth, asyncHandler(async(req, res) => {
-    const folderId = +req.params.id;
-    const folder = await db.getFolder(req.user.id, folderId);
-    formatData(folder);
-    console.log(folder);
-    res.render('index', {title: 'Folder', folder: folder});
-}))
-
 function formateDate (date) {
     return format(new Date(date), 'PPp')
 }
@@ -87,7 +59,57 @@ function formatFileSize(sizeInBytes) {
       formattedSize = sizeInBytes + ' Bytes';
     }
     return formattedSize;
-  }
+}
+
+
+uploadRouter.post('/upload', checkAuth, upload.array('files'), asyncHandler(async (req, res, next) => {
+    const folderId = +req.body.folder_id;
+    console.log(req.files);
+    try {
+        for(const file of req.files) {
+            await db.addFile(file.originalname, file.filename, +file.size, folderId);
+        }
+        res.redirect(`/folders/${folderId}`)
+    } catch(error) {
+        return next(error);
+    }
+}))
+
+uploadRouter.post('/create', checkAuth, asyncHandler(async(req, res) => {
+    const { folder_name, folder_id } = req.body;
+    const referer = req.get('Referer');
+    await db.addFolder(req.user.id, +folder_id, folder_name);
+    res.redirect(referer || '/');
+}))
+
+
+uploadRouter.post('/delete', checkAuth, asyncHandler(async(req, res)=> {
+    const referer = req.get('Referer');
+    const { folder_id } = req.body;
+    const user_id = req.user.id;
+    await db.deleteFolder(+user_id, +folder_id);
+    res.redirect(referer || '/');
+}))
+
+uploadRouter.post('/files/delete', checkAuth, asyncHandler(async(req, res, next)=> {
+    const referer = req.get('Referer');
+    const { file_id, file_name } = req.body;
+    const user_id = req.user.id;
+    await db.deleteFile(+user_id, +file_id);
+    const directory = path.join(__dirname, '..', 'uploads', req.user.username, file_name)
+    fs.rmSync(directory);
+    res.redirect(referer || '/');
+}))
+
+uploadRouter.get('/:id', checkAuth, asyncHandler(async(req, res) => {
+    const folderId = +req.params.id;
+    const folder = await db.getFolder(req.user.id, folderId);
+    const chain = await db.getFoldersChain(folderId);
+    formatData(folder);
+    console.log(folder);
+    res.render('index', {title: 'Folder', folder: folder, chain: chain});
+}))
+
 
 
 module.exports = uploadRouter;
