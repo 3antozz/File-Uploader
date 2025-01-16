@@ -20,11 +20,16 @@ section > div svg {
 section > div button {
     background: none;
     border: 2px solid white;
+    cursor: pointer;
 }
 
 
 section > div > a {
     display: flex;
+}
+
+.current-folder {
+    color: red;
 }
 
 

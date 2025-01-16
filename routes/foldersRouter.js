@@ -64,7 +64,6 @@ function formatFileSize(sizeInBytes) {
 
 uploadRouter.post('/upload', checkAuth, upload.array('files'), asyncHandler(async (req, res, next) => {
     const folderId = +req.body.folder_id;
-    console.log(req.files);
     try {
         for(const file of req.files) {
             await db.addFile(file.originalname, file.filename, +file.size, folderId);
@@ -91,7 +90,7 @@ uploadRouter.post('/delete', checkAuth, asyncHandler(async(req, res)=> {
     res.redirect(referer || '/');
 }))
 
-uploadRouter.post('/files/delete', checkAuth, asyncHandler(async(req, res, next)=> {
+uploadRouter.post('/files/delete', checkAuth, asyncHandler(async(req, res)=> {
     const referer = req.get('Referer');
     const { file_id, file_name } = req.body;
     const user_id = req.user.id;
@@ -101,12 +100,35 @@ uploadRouter.post('/files/delete', checkAuth, asyncHandler(async(req, res, next)
     res.redirect(referer || '/');
 }))
 
+uploadRouter.get('/edit/:id', checkAuth, asyncHandler(async(req, res) => {
+    const folderId = req.params.id;
+    const folder = await db.getFolder(+req.user.id, +folderId)
+    res.render('edit', {title: 'Edit Folder', object: folder, action: '/folders/edit'})
+}))
+
+uploadRouter.post('/edit', checkAuth, asyncHandler(async(req, res) => {
+    const {id, name} = req.body;
+    const result = await db.updateFolder(+req.user.id, +id, name);
+    res.redirect(`/folders/${result.parentId}`);
+}))
+
+uploadRouter.get('/files/edit/:id', checkAuth, asyncHandler(async(req, res) => {
+    const fileId = req.params.id;
+    const file = await db.getFile(+req.user.id, +fileId)
+    res.render('edit', {title: 'Edit File', object: file, action: '/folders/files/edit'})
+}))
+
+uploadRouter.post('/files/edit', checkAuth, asyncHandler(async(req, res) => {
+    const {id, name} = req.body;
+    const result = await db.updateFile(+req.user.id, +id, name);
+    res.redirect(`/folders/${result.folderId}`);
+}))
+
 uploadRouter.get('/:id', checkAuth, asyncHandler(async(req, res) => {
     const folderId = +req.params.id;
     const folder = await db.getFolder(req.user.id, folderId);
     const chain = await db.getFoldersChain(folderId);
     formatData(folder);
-    console.log(folder);
     res.render('index', {title: 'Folder', folder: folder, chain: chain});
 }))
 

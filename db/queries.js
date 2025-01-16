@@ -97,6 +97,32 @@ exports.deleteFolder = async (userId, folderId) => {
     })
 }
 
+exports.updateFolder = async (userId, folderId, name) => {
+    const folder = await prisma.folder.update({
+        where: {
+            id: folderId,
+            userId: userId
+        },
+        data: {
+            name: name
+        }
+    })
+    return folder;
+}
+
+exports.getFile = async (userId, fileId) => {
+    return await prisma.file.findUnique({
+        where: {
+            id: fileId,
+            folder: {
+                owner: {
+                    id: userId
+                }
+            }
+        }
+    })
+}
+
 exports.addFile = async(originalName, fileName, size, folderId) => {
     await prisma.file.create({
         data: {
@@ -123,10 +149,19 @@ exports.deleteFile = async (userId, fileId) => {
     })
 }
 
-
-
-const query =  `WITH RECURSIVE fh AS (
-                SELECT id, name, "parentId" FROM "Folder" WHERE id=8
-                UNION ALL
-                SELECT f.id, f.name, f."parentId" FROM "Folder" AS f JOIN fh ON fh."parentId" = f.id)
-                SELECT id, name FROM fh ORDER BY "parentId" NULLS FIRST;`
+exports.updateFile = async (userId, fileId, name) => {
+    const file = await prisma.file.update({
+        where: {
+            id: fileId,
+            folder: {
+                owner: {
+                    id: userId
+                }
+            }
+        },
+        data: {
+            originalName: name
+        }
+    })
+    return file;
+}

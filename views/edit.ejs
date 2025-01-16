@@ -11,12 +11,13 @@
 <body>
     <%- include('./partials/navbar') %>
     <main>
-        <h1>Upload files</h1>
-        <form action="/folders/upload" method="post" enctype="multipart/form-data">
+        <h1>Edit</h1>
+        <form action="<%= locals.action %>" method="post">
             <%- include('./partials/errors') %>
             <div>
-                <label for="file">Upload files:</label>
-                <input type="file" id="file" name="files" multiple />
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="<%= locals.object.name ? locals.object.name : locals.object.originalName %>"/>
+                <input type="hidden" name="id" value="<%= locals.object.id %>">
             </div>
             <button>Submit</button>
         </form>
