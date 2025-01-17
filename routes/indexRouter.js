@@ -55,7 +55,7 @@ function formatFileSize(sizeInBytes) {
 indexRouter.get('/', checkAuth, asyncHandler(async(req, res) => {
     const folder = await db.getRootFolder(req.user.id);
     formatData(folder);
-    res.render('index', {title: 'Upload Files', folder: folder});
+    res.render('index', {title: 'Upload Files', folder: folder, chain: [folder]});
 }));
 
 

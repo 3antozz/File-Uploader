@@ -5,22 +5,28 @@ const path = require('node:path');
 const asyncHandler = require('express-async-handler');
 const crypto = require('node:crypto');
 const { format } = require('date-fns');
+const { createClient } = require('@supabase/supabase-js')
+require("dotenv").config();
+
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 const uploadRouter = Router();
 const multer  = require('multer')
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const userFolder = path.join(__dirname, '..', 'uploads', req.user.username);
-        fs.mkdirSync(userFolder, { recursive: true });
-        cb(null, userFolder);
-    },
-    filename: function (req, file, cb) {
-        const suffix = crypto.randomUUID();
-        const extension = path.extname(file.originalname);
-        const name = path.basename(file.originalname, extension)
-        cb(null, `${name}-${suffix}${extension}`)
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         const userFolder = path.join(__dirname, '..', 'uploads', req.user.username);
+//         fs.mkdirSync(userFolder, { recursive: true });
+//         cb(null, userFolder);
+//     },
+//     filename: function (req, file, cb) {
+//         const suffix = crypto.randomUUID();
+//         const extension = path.extname(file.originalname);
+//         const name = path.basename(file.originalname, extension)
+//         cb(null, `${name}-${suffix}${extension}`)
+//     }
+// });
+const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
 const checkAuth = (req, res, next) => {
@@ -62,11 +68,34 @@ function formatFileSize(sizeInBytes) {
 }
 
 
+function setFileName(originalName) {
+        const suffix = crypto.randomUUID();
+        const extension = path.extname(originalName);
+        const name = path.basename(originalName, extension)
+        const fileName = `${name}-${suffix}${extension}`
+        return fileName;
+}
+
+
 uploadRouter.post('/upload', checkAuth, upload.array('files'), asyncHandler(async (req, res, next) => {
     const folderId = +req.body.folder_id;
     try {
         for(const file of req.files) {
-            await db.addFile(file.originalname, file.filename, +file.size, folderId);
+            file.filename = setFileName(file.originalname);
+            const { data, error } = await supabase.storage.from('main').upload(`/${req.user.username}/${file.filename}`, file.buffer, {
+                contentType: file.mimetype,
+              })
+            const result = supabase
+              .storage
+              .from('main')
+              .getPublicUrl(`${req.user.username}/${file.filename}`, {
+                download: true,
+            })
+            if (error) {
+                console.log(error);
+                throw new Error(error);
+            }
+            await db.addFile(file.originalname, file.filename, +file.size, result.data.publicUrl, folderId);
         }
         res.redirect(`/folders/${folderId}`)
     } catch(error) {
@@ -94,9 +123,15 @@ uploadRouter.post('/files/delete', checkAuth, asyncHandler(async(req, res)=> {
     const referer = req.get('Referer');
     const { file_id, file_name } = req.body;
     const user_id = req.user.id;
+    const { data, error } = await supabase
+        .storage
+        .from('main')
+        .remove([`${req.user.username}/${file_name}`])
+    if (error) {
+        console.log(error);
+        throw new Error(error);
+    }
     await db.deleteFile(+user_id, +file_id);
-    const directory = path.join(__dirname, '..', 'uploads', req.user.username, file_name)
-    fs.rmSync(directory);
     res.redirect(referer || '/');
 }))
 

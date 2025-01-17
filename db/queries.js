@@ -123,12 +123,13 @@ exports.getFile = async (userId, fileId) => {
     })
 }
 
-exports.addFile = async(originalName, fileName, size, folderId) => {
+exports.addFile = async(originalName, fileName, size, url, folderId) => {
     await prisma.file.create({
         data: {
             originalName,
             fileName,
             size,
+            url,
             folder: {
                 connect: {
                     id: folderId
