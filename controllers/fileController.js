@@ -7,6 +7,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 
 
 exports.uploadFile = async (req, res, next) => {
+    console.log(req.file);
     const folderId = +req.body.folder_id;
     try {
         for(const file of req.files) {

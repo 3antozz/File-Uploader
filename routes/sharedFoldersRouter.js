@@ -1,18 +1,20 @@
 const { Router } = require('express');
-const db = require('../db/queries');
-const path = require('node:path');
 const asyncHandler = require('express-async-handler');
-const crypto = require('node:crypto');
-const { format } = require('date-fns');
+const fn = require('../controllers/functions');
+const controller = require('../controllers/sharedFolderController')
 
 
-const sharedFolderRouter = Router();
+const router = Router();
 
 
+router.post('/', fn.checkAuth, asyncHandler(controller.shareFolder))
+
+router.get('/:token', asyncHandler(controller.getSharedFolder))
+router.get('/:token/folders/:folderId', asyncHandler(controller.getSharedSubFolder))
+router.post('/stop', asyncHandler(controller.stopSharing))
 
 
-
-module.exports = sharedFolderRouter;
+module.exports = router;
 
 
 

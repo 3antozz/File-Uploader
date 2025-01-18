@@ -28,6 +28,9 @@ exports.formatData = (object) => {
     object.subfolders.forEach((folder) => {
         folder.creationDate = formateDate(folder.creationDate);;
     })
+    if (object.SharedFolder) {
+        object.SharedFolder.expirationDate = formateDate(object.SharedFolder.expirationDate)
+    }
     return object;
 }
 

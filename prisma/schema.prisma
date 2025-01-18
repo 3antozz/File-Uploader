@@ -31,6 +31,7 @@ model Folder {
     parentId        Int?      
     parent          Folder?   @relation("FolderToParent", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     subfolders      Folder[]  @relation("FolderToParent") 
+    SharedFolder    SharedFolder?
 }
 
 model File {
@@ -42,6 +43,15 @@ model File {
     url           String    @unique @db.Text
     folder        Folder    @relation(fields: [folderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     folderId      Int 
+}
+
+model SharedFolder {
+    id              Int       @id @default(autoincrement()) 
+    creationDate    DateTime  @default(now())
+    expirationDate  DateTime
+    token           String    @unique
+    folder          Folder    @relation(fields: [folderId], references: [id])
+    folderId        Int       @unique
 }
 
 model Session {

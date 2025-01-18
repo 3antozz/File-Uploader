@@ -2,13 +2,18 @@ const { Router } = require('express');
 const asyncHandler = require('express-async-handler');
 const fn = require('../controllers/functions');
 const controller = require('../controllers/folderController')
-// const {body, validationResult} = require('express-validator');
+const { body } = require('express-validator');
+
+
+const validateFolderName = [
+    body("folder_name").trim().notEmpty().withMessage("Folder name must not be empty").isLength({min: 1, max: 20}).withMessage("Folder name must be between 1 and 20 characters")
+]
 
 const uploadRouter = Router();
 
 
 
-uploadRouter.post('/create', fn.checkAuth, asyncHandler(controller.createFolder))
+uploadRouter.post('/create', fn.checkAuth, validateFolderName, asyncHandler(controller.createFolder))
 
 uploadRouter.post('/delete', fn.checkAuth, asyncHandler(controller.deleteFolder))
 

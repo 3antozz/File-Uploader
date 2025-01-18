@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles/reset.css">
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+    <main>
+        <div>
+            <% if(locals.chain) { %>
+                <% locals.chain.forEach((folder) => 
+                { if (folder.id === locals.folder.id) { %>
+                    <a class="current-folder" href="/share/<%= locals.token %>"><%= folder.name %> </a>
+                <% } else {%>
+                    <a href="/share/<%= locals.token %>/folders/<%= folder.id %>"><%= folder.name %> > </a>
+                <% }}) %>
+            <% } %>
+        </div>
+        <section>
+            <% if(locals.folder) { %>
+                <div>
+                    <p>Folder / File</p>
+                    <p>Upload Date</p>
+                    <p>Size</p>
+                </div>
+                <% locals.folder.subfolders.map((subfolder) => { %>
+                    <div>
+                        <a href="/share/<%= locals.token %>/folders/<%= subfolder.id %>"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>folder</title><path d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" /></svg><p><%= subfolder.name %></p></a>
+                        <p><%= subfolder.creationDate %></p>
+                    </div>
+                <% }) %>
+                <% locals.folder.files.map((file) => { %>
+                    <div>
+                        <a download="" href="<%= file.url %>"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>file</title><path d="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" /></svg><p><%= file.originalName %></p></a>
+                        <p><%= file.uploadDate %></p>
+                        <p><%= file.size %></p>
+                    </div>
+                <% }) %>
+            <% } %>
+        </section>
+    </main>
+</body>
+</html>

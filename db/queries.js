@@ -1,5 +1,5 @@
 const prisma = require('./client')
-const { getFolderChain } = require('@prisma/client/sql')
+const { getFolderChain, getFolderChainLimit } = require('@prisma/client/sql')
 
 exports.addUser = async (username, password) => {
     await prisma.user.create({
@@ -59,7 +59,8 @@ exports.getRootFolder = async(userId) => {
         },
         include: {
             files: true,
-            subfolders: true
+            subfolders: true,
+            SharedFolder: true
         },
         orderBy: {
             id: 'asc'
@@ -76,7 +77,8 @@ exports.getFolder = async (userId, id) => {
         },
         include: {
             files: true,
-            subfolders: true
+            subfolders: true,
+            SharedFolder: true
         },
     })
 }
@@ -163,4 +165,58 @@ exports.updateFile = async (userId, fileId, name) => {
         }
     })
     return file;
+}
+
+exports.shareFolder = async(folderId, token, expirationDate) => {
+    await prisma.sharedFolder.create({
+        data : {
+            expirationDate,
+            token,
+            folder: {
+                connect: {
+                    id: folderId
+                }
+            }
+        }
+    })
+}
+
+exports.getSharedFolder = async(token) => {
+    return prisma.sharedFolder.findUnique({
+        where: {
+            token: token
+        },
+        include: {
+            folder: {
+                include: {
+                    files: true,
+                    subfolders: true
+                }
+            }
+        }
+    })
+}
+
+exports.getSharedSubFolder = async(folderId) => {
+    return prisma.folder.findUnique({
+        where: {
+            id: folderId
+        },
+        include: {
+            files: true,
+            subfolders: true
+        }
+    })
+}
+
+exports.getSharedFolderChain = async(folderId, rootId) => {
+    return await prisma.$queryRawTyped(getFolderChainLimit(folderId, rootId))
+}
+
+exports.deleteSharedFolder = async(token) => {
+    await prisma.sharedFolder.delete({
+        where: {
+            token: token
+        }
+    })
 }

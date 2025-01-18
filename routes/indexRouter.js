@@ -4,7 +4,7 @@ const foldersRouter = require('./foldersRouter');
 const authRouter = require('./auth');
 const sharedFoldersRouter = require('./sharedFoldersRouter');
 const filesRouter = require('./filesRouter');
-const db = require('../db/queries');
+const folderController = require('../controllers/folderController')
 const fn = require('../controllers/functions');
 
 const indexRouter = Router();
@@ -14,11 +14,7 @@ indexRouter.use('/folders', foldersRouter);
 indexRouter.use('/share', sharedFoldersRouter);
 indexRouter.use('/files', filesRouter);
 
-indexRouter.get('/', fn.checkAuth, asyncHandler(async(req, res) => {
-    const folder = await db.getRootFolder(req.user.id);
-    fn.formatData(folder);
-    res.render('index', {title: 'Upload Files', folder: folder, chain: [folder]});
-}));
+indexRouter.get('/', fn.checkAuth, asyncHandler(folderController.getIndexFolder));
 
 
 

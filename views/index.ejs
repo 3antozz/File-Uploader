@@ -21,6 +21,12 @@
                 <% }}) %>
             <% } %>
         </div>
+        <div>
+            <% if(locals.folder && locals.shareLink) { %>
+                <h3>This Folder is publically shared through the following link: <a href="<%= locals.shareLink %>" target="_blank"><%= locals.shareLink %></a></h3>
+                <p>Link expires on: <%= locals.folder.SharedFolder.expirationDate %></p>
+            <% } %>
+        </div>
         <section>
             <% if(locals.folder) { %>
                 <div>
@@ -57,9 +63,16 @@
             <% } %>
         </section>
         <form action="/folders/create" method="post">
+            <% if(locals.folderErrors) { %>
+                <ul>
+                    <% folderErrors.map((error) => {%>
+                        <li><%= error.msg %></li>
+                    <% }) %>
+                </ul>
+            <% } %>
             <div>
                 <label for="name">Folder name:</label>
-                <input type="text" id="name" name="folder_name"/>
+                <input type="text" id="name" name="folder_name" maxlength="20" required/>
                 <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
             </div>
             <button>Submit</button>
@@ -68,11 +81,31 @@
             <%- include('partials/errors') %>
             <div>
                 <label for="file">Upload files:</label>
-                <input type="file" id="file" name="files" multiple />
+                <input type="file" id="file" name="files" multiple required />
                 <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
             </div>
             <button>Submit</button>
         </form>
+        <% if(!locals.shareLink) {%>
+            <form action="/share" method="post">
+                <%- include('partials/errors') %>
+                <div>
+                    <label for="1-day">1 day</label>
+                    <input type="radio" name="duration" id="1-day" value="1" checked>
+                    <label for="3-day">3 days</label>
+                    <input type="radio" name="duration" id="3-day" value="3">
+                    <label for="7-day">7 days</label>
+                    <input type="radio" name="duration" id="7-day" value="7">
+                    <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
+                </div>
+                <button>Submit</button>
+            </form>
+        <% } else { %>
+            <form action="/share/stop" method="post">
+                <input type="hidden" name="folder_token" value="<%= locals.folder.SharedFolder.token %>">
+                <button>Disable Sharing</button>
+            </form>
+        <% } %>
     </main>
 </body>
 </html>
