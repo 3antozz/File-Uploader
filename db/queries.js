@@ -89,7 +89,7 @@ exports.getFoldersChain = async (folderId) => {
 
 
 exports.deleteFolder = async (userId, folderId) => {
-    await prisma.folder.delete({
+    return await prisma.folder.delete({
         where: {
             userId: userId,
             id: folderId

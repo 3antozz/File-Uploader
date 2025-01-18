@@ -1,5 +1,5 @@
 main {
-    padding: 0.5rem 10%;
+    padding: 0.5rem 15%;
     display: flex;
     gap: 1.5rem;
 }
@@ -54,7 +54,7 @@ em {
 
 .folders > div {
     display: grid;
-    grid-template-columns: 5fr 1fr 1fr 2fr 3fr;
+    grid-template-columns: 1.5fr 1fr 1fr;
     align-items: center;
 }
 
@@ -141,7 +141,7 @@ em {
 }
 
 .folders > div > a:first-of-type p {
-    max-width: 20rem;
+    max-width: 30rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -242,7 +242,7 @@ input:focus, button:focus {
     }
 
     .folders > div {
-        grid-template-columns: 4.5fr 1fr 1fr 2fr 2fr;
+        grid-template-columns: 2.5fr 1fr 1fr;
     }
     
     .forms {
@@ -259,10 +259,9 @@ input:focus, button:focus {
     }
     .folders > div svg {
         width: 1.3rem;
-        flex-shrink: 0;
     }
     .folders > div > a:first-of-type p {
-        max-width: 32vw;
+        max-width: 40vw;
     }
     .info {
         text-align: center;

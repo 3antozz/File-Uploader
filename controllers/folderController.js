@@ -27,11 +27,10 @@ exports.createFolder = async(req, res) => {
 }
 
 exports.deleteFolder = async(req, res)=> {
-    const referer = req.get('Referer');
     const { folder_id } = req.body;
     const user_id = req.user.id;
-    await db.deleteFolder(+user_id, +folder_id);
-    res.redirect(referer || '/');
+    const folder = await db.deleteFolder(+user_id, +folder_id);
+    res.redirect(`/folders/${folder.parentId}`);
 }
 
 exports.editForm = async(req, res) => {
