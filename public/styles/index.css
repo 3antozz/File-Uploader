@@ -141,7 +141,6 @@ em {
 }
 
 .folders > div > a:first-of-type p {
-    max-width: 20rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

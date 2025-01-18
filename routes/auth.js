@@ -71,7 +71,6 @@ authRouter.get('/sign-up', checkUnauth, asyncHandler((req, res) => {
 authRouter.post('/sign-up', validateSignUp, asyncHandler(async (req, res, next) => {
     const result = validationResult(req);
     if(!result.isEmpty()) {
-        console.log(result);
         return res.render('sign-up', {title: 'Sign Up', errors: result.errors})
     }
     const {username, password} = req.body;
