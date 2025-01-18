@@ -1,11 +1,9 @@
 const prisma = require('./client')
 const { getFolderChain } = require('@prisma/client/sql')
 
-exports.addUser = async (first_name, last_name, username, password) => {
+exports.addUser = async (username, password) => {
     await prisma.user.create({
         data : {
-            first_name,
-            last_name,
             username,
             password,
             folders: {

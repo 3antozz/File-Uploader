@@ -53,8 +53,6 @@ const checkUnauth = asyncHandler((req, res, next) => {
 })
 
 const validateSignUp = [
-    body("first_name").trim().notEmpty().withMessage("First Name must not be empty").isAlpha().withMessage("First Name must only contain alphabet and no spaces").isLength({min: 2, max: 20}).withMessage("Password must be between 2 and 20 characters"),
-    body("last_name").trim().notEmpty().withMessage("Last Name must not be empty").isAlpha().withMessage("Last Name must only contain alphabet and no spaces").isLength({min: 2, max: 20}).withMessage("Password must be between 2 and 20 characters"),
     body("username").trim().notEmpty().withMessage("Username must not be empty").matches(/^[a-zA-Z0-9_]+$/).withMessage("Username must only contain alphabet and numbers and no spaces").isLength({min: 3, max: 20}).withMessage("Password must be between 3 and 20 characters"),
     body("password").trim().notEmpty().withMessage("Password must not be empty").isLength({min: 6}).withMessage("Password must be atleast 6 characters long"),
     body('confirm_password').custom((value, { req }) => {
@@ -76,13 +74,13 @@ authRouter.post('/sign-up', validateSignUp, asyncHandler(async (req, res, next) 
         console.log(result);
         return res.render('sign-up', {title: 'Sign Up', errors: result.errors})
     }
-    const {first_name, last_name, username, password} = req.body;
+    const {username, password} = req.body;
     bcrypt.hash(password, 10, async(error, hashedPassword) => {
         if(error) {
             return next(error);
         }
         try {
-            await db.addUser(first_name, last_name, username, hashedPassword);
+            await db.addUser(username, hashedPassword);
         } catch(error) {
             console.log(error);
             return res.render('sign-up', {title: 'Sign Up', errors: [{msg: "An unexpcted error has occured, please try again later."}]})
