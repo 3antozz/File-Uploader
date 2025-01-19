@@ -82,7 +82,10 @@ authRouter.post('/sign-up', validateSignUp, asyncHandler(async (req, res, next) 
             await db.addUser(username, hashedPassword);
         } catch(error) {
             console.log(error);
-            return res.render('sign-up', {title: 'Sign Up', errors: [{msg: "An unexpcted error has occured, please try again later."}]})
+            if (error.code === 'P2002') {
+                error.msg = 'This username already exists, please try another one'
+            }
+            return res.render('sign-up', {title: 'Sign Up', errors: [{msg: error.msg}]})
         }
         res.redirect('/login');
     })
