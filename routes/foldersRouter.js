@@ -6,7 +6,7 @@ const { body } = require('express-validator');
 
 
 const validateFolderName = [
-    body("folder_name").trim().notEmpty().withMessage("Folder name must not be empty").isLength({min: 1, max: 30}).withMessage("Folder name must be between 1 and 30 characters")
+    body("folder_name").trim().notEmpty().withMessage("Folder name must not be empty").bail().isLength({min: 1, max: 30}).withMessage("Folder name must be between 1 and 30 characters")
 ]
 
 const uploadRouter = Router();

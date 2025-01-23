@@ -53,15 +53,15 @@ const checkUnauth = asyncHandler((req, res, next) => {
 })
 
 const validateSignUp = [
-    body("username").trim().notEmpty().withMessage("Username must not be empty").matches(/^[a-zA-Z0-9_]+$/).withMessage("Username must only contain alphabet and numbers and no spaces").isLength({min: 3, max: 20}).withMessage("Password must be between 3 and 20 characters"),
-    body("password").trim().notEmpty().withMessage("Password must not be empty").isLength({min: 6}).withMessage("Password must be atleast 6 characters long"),
+    body("username").trim().notEmpty().withMessage("Username must not be empty").bail().matches(/^[a-zA-Z0-9_]+$/).withMessage("Username must only contain alphabet and numbers and no spaces").isLength({min: 3, max: 20}).withMessage("Username must be between 3 and 20 characters"),
+    body("password").trim().notEmpty().withMessage("Password must not be empty").bail().isLength({min: 6}).withMessage("Password must be atleast 6 characters long"),
     body('confirm_password').custom((value, { req }) => {
         return value === req.body.password;
       }).withMessage("Passwords don't match")
 ];
 
 const validateLogin = [
-    body("username").trim().notEmpty().withMessage("Username must not be empty").matches(/^[a-zA-Z0-9_]+$/).withMessage("Incorrect username").isLength({min: 3, max: 20}).withMessage("Incorrect username")
+    body("username").trim().notEmpty().withMessage("Username must not be empty").bail().matches(/^[a-zA-Z0-9_]+$/).withMessage("Incorrect username").isLength({min: 3, max: 20}).withMessage("Incorrect username")
 ];
 
 authRouter.get('/sign-up', checkUnauth, asyncHandler((req, res) => {
