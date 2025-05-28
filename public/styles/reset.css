@@ -54,3 +54,18 @@ h1, h2, h3, h4, h5, h6 {
 #root, #__next {
     isolation: isolate;
 }
+
+input[type="file"]::file-selector-button {
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  border: none;
+  background-color: #363642;
+  transition: filter 200ms ease;
+  color: #ededed;
+  cursor: pointer;
+}
+
+
+input[type="file"]::file-selector-button:hover {
+  filter: brightness(1.2);
+}
