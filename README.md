@@ -10,6 +10,9 @@ This was a project assignment from The Odin Project's Node course. The brief was
 
 # [Live Preview](https://file-uploader-ifat.onrender.com/)
 
+> [!NOTE]
+> App is hosted with free tier services, first load might take some time.
+
 ## Features
 
 - Authentification via username & password.
