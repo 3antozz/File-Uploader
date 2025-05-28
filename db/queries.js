@@ -58,8 +58,18 @@ exports.getRootFolder = async(userId) => {
             userId: userId
         },
         include: {
-            files: true,
-            subfolders: true,
+            files: {
+                orderBy: [
+                    { uploadDate: 'desc' },
+                    { originalName: 'asc' }
+                ] 
+            },
+            subfolders: {
+                orderBy: [
+                    { name: 'asc' },
+                    { creationDate: 'desc' }
+                ] 
+            },
             SharedFolder: true
         },
         orderBy: {
