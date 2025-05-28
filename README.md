@@ -4,14 +4,14 @@ A cloud personal storage application created with ExpressJS and EJS.
 
 ![Interface](./public//showcase/interface.png)
 
-## Why build this project ?
-
-This was a project assignment from The Odin Project's Node course. The brief was to create a stripped down version of Google Drive using Express and the templating engine EJS.
-
 # [Live Preview](https://file-uploader-ifat.onrender.com/)
 
 > [!NOTE]
 > App is hosted with free tier services, first load might take some time.
+
+## Why build this project ?
+
+This was a project assignment from The Odin Project's Node course. The brief was to create a stripped down version of Google Drive using Express and the templating engine EJS.
 
 ## Features
 
