@@ -76,8 +76,18 @@ exports.getFolder = async (userId, id) => {
             id: id
         },
         include: {
-            files: true,
-            subfolders: true,
+            files: {
+                orderBy: [
+                    { uploadDate: 'desc' },
+                    { originalName: 'asc' }
+                ]  
+            },
+            subfolders: {
+                orderBy: [
+                    { name: 'asc' },
+                    { creationDate: 'desc' }
+                ] 
+            },
             SharedFolder: true
         },
     })
@@ -189,8 +199,18 @@ exports.getSharedFolder = async(token) => {
         include: {
             folder: {
                 include: {
-                    files: true,
-                    subfolders: true
+                    files: {
+                        orderBy: [
+                            { uploadDate: 'desc' },
+                            { originalName: 'asc' }
+                        ]  
+                    },
+                    subfolders: {
+                        orderBy: [
+                            { name: 'asc' },
+                            { creationDate: 'desc' }
+                        ] 
+                    }
                 }
             }
         }
@@ -203,8 +223,18 @@ exports.getSharedSubFolder = async(folderId) => {
             id: folderId
         },
         include: {
-            files: true,
-            subfolders: true
+            files: {
+                orderBy: [
+                    { uploadDate: 'desc' },
+                    { originalName: 'asc' }
+                ] 
+            },
+            subfolders: {
+                orderBy: [
+                    { name: 'asc' },
+                    { creationDate: 'desc' }
+                ] 
+            }
         }
     })
 }

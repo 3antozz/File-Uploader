@@ -2,6 +2,10 @@ const { format } = require('date-fns');
 const path = require('node:path');
 
 function formateDate (date) {
+    return format(new Date(date), 'PP')
+}
+
+function formateDateWithTime (date) {
     return format(new Date(date), 'PPp')
 }
 
@@ -29,7 +33,7 @@ exports.formatData = (object) => {
         folder.creationDate = formateDate(folder.creationDate);;
     })
     if (object.SharedFolder) {
-        object.SharedFolder.expirationDate = formateDate(object.SharedFolder.expirationDate)
+        object.SharedFolder.expirationDate = formateDateWithTime(object.SharedFolder.expirationDate)
     }
     return object;
 }

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title>File Uploader | <%= title %></title>
+    <link rel="icon" type="image/x-icon" href="/favicon.svg">
     <link rel="stylesheet" href="/styles/reset.css">
     <link rel="stylesheet" href="/styles/navbar.css">
     <link rel="stylesheet" href="/styles/index.css">
@@ -13,53 +14,8 @@
 </head>
 <body>
     <%- include('partials/navbar') %>
-    <section class="chain">
-        <% if(locals.chain) { %>
-            <% locals.chain.forEach((folder) => 
-            { if (folder.id === locals.folder.id) { %>
-                <a class="current-folder" href="/folders/<%= folder.id %>"><%= folder.name %> </a>
-            <% } else {%>
-                <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
-                <p> &nbsp;>&nbsp; </p>
-            <% }}) %>
-        <% } %>
-    </section>
     <main>
-        <aside>
-            <section class="forms">
-                <% if(locals.folder && locals.shareLink) { %>
-                    <div class="link">
-                        <h4>This Folder is publically shared through the following link: <a href="<%= locals.shareLink %>" target="_blank"><%= locals.shareLink %></a></h4>
-                        <p>Link expires on: <%= locals.folder.SharedFolder.expirationDate %></p>
-                    </div>
-                <% } %>
-            <% if(!locals.shareLink) {%>
-                <form action="/share" method="post" class="share">
-                    <%- include('partials/errors') %>
-                    <legend>Share this folder publically for a period of:</legend>
-                    <div>
-                        <div>
-                            <label for="1-day">1 day</label>
-                            <input type="radio" name="duration" id="1-day" value="1" checked>
-                        </div>
-                        <div>
-                            <label for="3-day">3 days</label>
-                            <input type="radio" name="duration" id="3-day" value="3">
-                        </div>
-                        <div>
-                            <label for="7-day">7 days</label>
-                            <input type="radio" name="duration" id="7-day" value="7">
-                        </div>
-                        <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
-                    </div>
-                    <button>Share</button>
-                </form>
-            <% } else { %>
-                <form action="/share/stop" method="post" class="stop">
-                    <input type="hidden" name="folder_token" value="<%= locals.folder.SharedFolder.token %>">
-                    <button>Disable Sharing</button>
-                </form>
-            <% } %>
+        <aside class="forms">
                 <form action="/folders/create" method="post">
                     <% if(locals.folderErrors) { %>
                         <ul>
@@ -69,8 +25,8 @@
                         </ul>
                     <% } %>
                     <div>
-                        <label for="name">Folder name:</label>
-                        <input type="text" id="name" name="folder_name" maxlength="30" required/>
+                        <label hidden for="name">Folder name:</label>
+                        <input type="text" id="name" name="folder_name" placeholder="Folder name" maxlength="30" required/>
                         <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
                     </div>
                     <button>Create folder</button>
@@ -78,52 +34,111 @@
                 <form action="/files/upload" method="post" enctype="multipart/form-data">
                     <%- include('partials/errors') %>
                     <div>
-                        <label for="file">Upload files:</label>
+                        <label hidden for="file">Upload files:</label>
                         <input type="file" id="file" name="files" multiple required/>
                         <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
                     </div>
-                    <button>Upload File</button>
+                    <button>Upload Files</button>
                 </form>
-            </section>
+                <% if(locals.folder && locals.shareLink) { %>
+                    <div class="link">
+                        <h4>This Folder is shared publically</h4>
+                        <button class="copy-link" id="copy-link" onclick="copyLink()">Copy share link</button>
+                        <p>Expiration: <%= locals.folder.SharedFolder.expirationDate %></p>
+                    </div>
+                <% } %>
+                <% if(!locals.shareLink) {%>
+                    <form action="/share" method="post" class="share">
+                        <%- include('partials/errors') %>
+                        <legend>Share this folder publically for a period of:</legend>
+                        <div>
+                            <div>
+                                <label for="1-day">1 day</label>
+                                <input type="radio" name="duration" id="1-day" value="1" checked>
+                            </div>
+                            <div>
+                                <label for="3-day">3 days</label>
+                                <input type="radio" name="duration" id="3-day" value="3">
+                            </div>
+                            <div>
+                                <label for="7-day">7 days</label>
+                                <input type="radio" name="duration" id="7-day" value="7">
+                            </div>
+                            <input type="hidden" name="folder_id" value="<%= locals.folder.id %>">
+                        </div>
+                        <button>Share</button>
+                    </form>
+                <% } else { %>
+                    <form action="/share/stop" method="post" class="stop">
+                        <input type="hidden" name="folder_token" value="<%= locals.folder.SharedFolder.token %>">
+                        <button>Disable Sharing</button>
+                    </form>
+                <% } %>
         </aside>
-        <div class="middle">
-        <section class="folders">
-            <% if(locals.folder) { %>
-                <div class="info">
-                    <p>Folder / File</p>
-                    <p>Edit</p>
-                    <p>Delete</p>
-                    <p>Size</p>
-                    <p>Upload Date</p>
-                </div>
-                <% locals.folder.subfolders.map((subfolder) => { %>
-                    <div class="folder">
-                        <a href="/folders/<%= subfolder.id %>"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>folder</title><path d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" /></svg><p><%= subfolder.name %></p></a>
-                        <a href="/folders/edit/<%= subfolder.id %>" class="edit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Edit</title><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg></a>
-                        <form action="/folders/delete" method="post">
-                            <input type="hidden" name="folder_id" value="<%= subfolder.id %>">
-                            <button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete</title><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg></button>
-                        </form>
-                        <p></p>
-                        <p class="date"><%= subfolder.creationDate %></p>
-                    </div>
-                <% }) %>
-                <% locals.folder.files.map((file) => { %>
-                    <div class="file">
-                        <a download="" href="<%= file.url %>"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>file</title><path d="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" /></svg><p><%= file.originalName %></p></a>
-                        <a href="/files/edit/<%= file.id %>" class="edit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Edit</title><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg></a>
-                        <form action="/files/delete" method="post">
-                            <input type="hidden" name="file_id" value="<%= file.id %>">
-                            <input type="hidden" name="file_name" value="<%= file.fileName%>">
-                            <button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete</title><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg></button>
-                        </form>
-                        <p class="size"><%= file.size %></p>
-                        <p class="date"><%= file.uploadDate %></p>
-                    </div>
-                <% }) %>
+        <section class="middle">
+            <section class="chain">
+            <% if(locals.chain) { %>
+                <% locals.chain.forEach((folder) => 
+                { if (folder.id === locals.folder.id) { %>
+                    <a class="current-folder" href="/folders/<%= folder.id %>"><%= folder.name %> </a>
+                <% } else {%>
+                    <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
+                    <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg></p>
+                <% }}) %>
             <% } %>
+            </section>
+            <div class="folders">
+                <% if(locals.folder) { %>
+                    <div class="info">
+                        <p>Folder / File</p>
+                        <p>Size</p>
+                        <p>Upload Date</p>
+                        <p></p>
+                        <p></p>
+                    </div>
+                    <% locals.folder.subfolders.map((subfolder) => { %>
+                        <div class="folder">
+                            <a href="/folders/<%= subfolder.id %>"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>folder</title><path d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" /></svg><p><%= subfolder.name %></p></a>
+                            <p>—</p>
+                            <p class="date"><%= subfolder.creationDate %></p>
+                            <a href="/folders/edit/<%= subfolder.id %>" class="edit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Edit</title><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg></a>
+                            <form action="/folders/delete" method="post">
+                                <input type="hidden" name="folder_id" value="<%= subfolder.id %>">
+                                <button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete</title><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg></button>
+                            </form>
+                        </div>
+                    <% }) %>
+                    <% locals.folder.files.map((file) => { %>
+                        <div class="file">
+                            <a download="" href="<%= file.url %>"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>file</title><path d="M13,9V3.5L18.5,9M6,2C4.89,2 4,2.89 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6Z" /></svg><p><%= file.originalName %></p></a>
+                            <p class="size"><%= file.size %></p>
+                            <p class="date"><%= file.uploadDate %></p>
+                            <a href="/files/edit/<%= file.id %>" class="edit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Edit</title><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg></a>
+                            <form action="/files/delete" method="post">
+                                <input type="hidden" name="file_id" value="<%= file.id %>">
+                                <input type="hidden" name="file_name" value="<%= file.fileName%>">
+                                <button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>delete</title><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg></button>
+                            </form>
+                        </div>
+                    <% }) %>
+                <% } %>
+                <% if(locals.folder?.files.length === 0 && locals.folder?.subfolders.length === 0) { %>
+                    <p class="empty-table">This folder is empty</p>
+                <% } %>
+            </div>
         </section>
-        </div>
     </main>
+    <script>
+        function copyLink() {
+            navigator.clipboard.writeText("<%= locals.shareLink %>");
+        }
+        const forms = document.querySelector(".forms");
+        const isShared = <%- JSON.stringify(locals.folder) %>;
+        if(isShared.SharedFolder) {
+            forms.classList.add("grid")
+        } else {
+            forms.classList.add("flex")
+        }
+    </script>
 </body>
 </html>

@@ -33,7 +33,7 @@ main > p > a {
 }
 
 form button:hover {
-    transform: scale(1.3);
+    transform: scale(1.1);
     cursor: pointer;
     background-color: rgb(253, 95, 95);
     color: white;
@@ -100,7 +100,7 @@ main > h1 {
     accent-color: red;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 500px) {
     form {
         width: 100%;
         padding: 2rem 1rem;
