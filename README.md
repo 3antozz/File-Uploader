@@ -1,6 +1,6 @@
 # File Uploader
 
-A cloud personal storage application created with ExpressJS and EJS.
+Google drive-like storage application created with ExpressJS and EJS.
 
 ![Interface](./public//showcase/interface.png)
 
