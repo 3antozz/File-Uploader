@@ -4,6 +4,8 @@ Google drive-like storage application created with ExpressJS and EJS.
 
 ![Interface](./public//showcase/interface.png)
 
+![Login Page](./public//showcase/login.png)
+
 # [Live Preview](https://file-uploader-ifat.onrender.com/)
 
 > [!NOTE]

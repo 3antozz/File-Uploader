@@ -1,5 +1,6 @@
 main {
     padding: 0 3vw;
+    padding-right: 0;
     display: flex;
     gap: 1.5rem;
     overflow-y: auto;
@@ -237,6 +238,11 @@ legend {
     transform: scale(1.5);
     accent-color: red;
     cursor: pointer;
+    transition: transform 200ms ease;
+}
+
+.forms form:last-of-type input:hover {
+    transform: scale(2);
 }
 
 .forms form button, #copy-link {
@@ -261,8 +267,10 @@ legend {
 }
 
 input[type="text"] {
-    background-color: rgb(208, 207, 207);
-
+    background-color: #373636;
+    color: inherit;
+    border: 0;
+    padding: 0.4rem 0.5rem;
 }
 
 input {
@@ -272,7 +280,7 @@ input {
 }
 
 
-input:focus, button:focus {
+input[type="text"]:focus, button:focus {
     outline-color: red;
     outline-style: solid;
     outline-width: 3px;

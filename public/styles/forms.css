@@ -4,12 +4,20 @@ main {
     align-items: center;
     padding: 2rem 2rem;
     gap: 1rem;
+    width: 100%;
+    max-width: 25rem;
+    margin: auto;
+}
+
+em {
+    color: red;
 }
 
 form {
     padding: 1rem;
     border: 2px solid grey;
     border-radius: 15px;
+    width: 100%;
 }
 
 ul {
@@ -41,11 +49,12 @@ form button:hover {
 
 input, textarea {
     width: 100%;
-    background-color: rgb(208, 207, 207);
+    background-color: #373636;
+    color: inherit;
+    border: 0;
     border-radius: 10px;
     font-size: 1.2rem;
     padding: 3px 5px;
-    font-weight: bold;
 }
 
 textarea {
