@@ -10,6 +10,10 @@ nav h1 {
     font-size: max(1.3rem, 2.2vw);
 }
 
+nav h2 {
+    font-size: max(1.3rem, 2.1vw);
+}
+
 
 nav a:not(.brand) {
     padding: 0.5rem 1rem;

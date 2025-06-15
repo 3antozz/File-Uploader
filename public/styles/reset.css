@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('/subset-Roboto-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 /*
 Josh's Custom CSS Reset
 https://www.joshwcomeau.com/css/custom-css-reset/
@@ -69,3 +77,4 @@ input[type="file"]::file-selector-button {
 input[type="file"]::file-selector-button:hover {
   filter: brightness(1.2);
 }
+
