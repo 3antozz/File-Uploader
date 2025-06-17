@@ -19,7 +19,7 @@ This was a project assignment from The Odin Project's Node course. The brief was
 
 ## Features
 
-- Authentification via username & password.
+- Authentication via username & password.
 - Folder and file management
 - Files upload and download.
 - Public folder sharing with expiration duration.
